@@ -9,7 +9,8 @@
         src="{{ url_for('get_audio', filename=audio_file) }}">
     </audio>
     </figure>
-
-    <button>Redo Recording</button>
-    <button>Submit Recording</button>
+    <form method="POST">
+        <button type="submit" value="redo" name="redo">Redo Recording</button>
+        <button type="submit" value="submit" name="submit">Submit Recording</button>
+    </form>
 {% endblock %}

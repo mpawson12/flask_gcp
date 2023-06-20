@@ -41,10 +41,20 @@ def get_audio(filename):
     )
 
 
-@app.route('/confirm')
+@app.route('/confirm', methods=['GET', 'POST'])
 def confirm_recording():
-
+    if request.method == "POST":
+        if request.form.get("redo") == "redo":
+            return redirect("recorder", code=301)
+        elif request.form.get("submit") == "submit":
+            ...
+            # upload
+            return redirect("loading", code=301)
     return render_template('confirm.html', audio_file=current_file)
+
+@app.route('/loading', methods=['GET'])
+def loading():
+    return render_template('loading.html')
 
 
 if __name__ == '__main__':
