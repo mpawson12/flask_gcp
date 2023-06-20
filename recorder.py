@@ -1,9 +1,26 @@
 import time
+import cv2
 import sounddevice as sd
 import soundfile as sf
+
 import static.config
 
+current_file = "undefined"
 recording_data = None
+camera = cv2.VideoCapture(0)
+
+
+def gen_frames():
+    while True:
+        success, frame = camera.read()
+        if not success:
+            break
+        else:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
 
 
 def record_audio():
@@ -11,7 +28,7 @@ def record_audio():
     recording_data = sd.rec(int(static.config.sample_rate * static.config.duration),
                             samplerate=static.config.sample_rate,
                             channels=2,
-                            blocking=True)
+                            blocking=False)
 
 
 def save_audio():
@@ -19,4 +36,6 @@ def save_audio():
     sf.write(file_name,
              data=recording_data,
              samplerate=static.config.sample_rate)
-    return file_name
+    global current_file
+    current_file = file_name
+    print(f"written file {current_file}")

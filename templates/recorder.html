@@ -6,20 +6,54 @@
 
     <script>
         function do_countdown() {
+            $.ajax({
+                type: "POST", //
+                url: "/record_audio", // url to the function
+                data: {
+                    // include data here if you want to send something in json format
+                },
+                success: {}
+            });
             var timeleft = '{{ speaking_time }}';
-            var downloadTimer = setInterval(function(){
-            timeleft--;
-            document.getElementById("countdowntimer").textContent = timeleft;
-            if(timeleft <= 0)
-                clearInterval(downloadTimer);
-            },1000);
+            var downloadTimer = setInterval( function() {
+                timeleft--;
+                document.getElementById("countdowntimer").textContent = timeleft;
+                if(timeleft <= 0) {
+                    clearInterval(downloadTimer);
+                    $.ajax({
+                        type: "POST", //
+                        url: "/save_audio", // url to the function
+                        data: {
+                            // include data here if you want to send something in json format
+                        },
+                        success: {}
+                    });
+                    $.ajax({
+                        type: "GET", //
+                        url: "/confirm", // url to the function
+                        data: {
+                            // include data here if you want to send something in json format
+                        },
+                        success: function() {
+                            window.location.href = "/confirm";
+                        }
+                    });
+                }
+            }, 1000);
         }
 
     </script>
 
     <form method="post">
-    <p>video would go here</p>
-    <button type="submit" name="recording_button" value="start" onclick="do_countdown()">{{ button_state }}</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8  offset-lg-2">
+                <h3 class="mt-5">Live Streaming</h3>
+                <img src="{{ url_for('video_feed') }}" width="50%">
+            </div>
+        </div>
+    </div>
+    <button type="button" onclick="do_countdown()">Start Recording</button>
     <p>You have <span id="countdowntimer">{{ speaking_time }}</span> seconds left to speak.</p>
     </form>
 {% endblock %}
