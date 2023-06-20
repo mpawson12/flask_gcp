@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request
+
+import static.config
+from recorder import record_audio, save_audio
 app = Flask(__name__)
 
 
@@ -14,10 +17,20 @@ def recorder():
         print(request.form['recording_button'])
         if request.form['recording_button'] == 'start':
             print("start_record trigger event")
-            button_state = "Stop Recording"
-        elif request.form['recording_button'] == 'stop':
-            print("stop_record trigger event")
-    return render_template('recorder.html', button_state=button_state)
+            record_audio()
+            # do other processing here
+            save_audio()
+            # redirect to playback
+
+    return render_template('recorder.html',
+                           button_state=button_state,
+                           speaking_time=static.config.duration)
+
+
+@app.route('/confirm')
+def confirm_recording():
+
+    return render_template('confirm.html')
 
 
 if __name__ == '__main__':

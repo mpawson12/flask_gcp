@@ -1,8 +1,25 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
+
+    <script>
+        function do_countdown() {
+            var timeleft = '{{ speaking_time }}';
+            var downloadTimer = setInterval(function(){
+            timeleft--;
+            document.getElementById("countdowntimer").textContent = timeleft;
+            if(timeleft <= 0)
+                clearInterval(downloadTimer);
+            },1000);
+        }
+
+    </script>
+
     <form method="post">
     <p>video would go here</p>
-    <button type="submit" name="recording_button" value="start">{{ button_state }}</button>
+    <button type="submit" name="recording_button" value="start" onclick="do_countdown()">{{ button_state }}</button>
+    <p>You have <span id="countdowntimer">{{ speaking_time }}</span> seconds left to speak.</p>
     </form>
 {% endblock %}
