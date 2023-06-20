@@ -3,5 +3,13 @@
 {% block title %}Confirm recording{% endblock %}
 
 {% block content %}
-stuff goes here
+    <figure>
+    <figcaption>Listen to your recording:</figcaption>
+    <audio controls
+        src="{{ url_for('get_audio', filename=audio_file) }}">
+    </audio>
+    </figure>
+
+    <button>Redo Recording</button>
+    <button>Submit Recording</button>
 {% endblock %}
